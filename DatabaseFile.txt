@@ -1,0 +1,680 @@
+
+++++++++++++++UC-1+++++++++++++++++++++++++++
+
+MySQL Shell 8.0.23
+
+Copyright (c) 2016, 2021, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \c
+\connect [--mx|--mysqlx|--mc|--mysql] <URI>
+ MySQL  SQL > \connect root@localhost:3306
+Creating a session to 'root@localhost:3306'
+Fetching schema names for autocompletion... Press ^C to stop.
+Your MySQL connection id is 14
+Server version: 8.0.23 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| demo               |
+| information_schema |
+| login_info         |
+| mysql              |
+| payroll_service    |
+| performance_schema |
+| sakila             |
+| sur                |
+| suraj              |
+| sys                |
+| world              |
++--------------------+
+11 rows in set (0.0299 sec)
+ MySQL  localhost:3306 ssl  SQL > create database employee_payroll_service;
+Query OK, 1 row affected (1.3377 sec)
+ MySQL  localhost:3306 ssl  SQL > use employee_payroll_service;
+Default schema set to `employee_payroll_service`.
+Fetching table and column names from `employee_payroll_service` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select database();
++--------------------------+
+| database()               |
++--------------------------+
+| employee_payroll_service |
++--------------------------+
+1 row in set (0.0004 sec)
+
++++++++++++++++++++++++UC-2++++++++++++++++++++++++++++++++++++++++++
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > create table employee_payroll (id INT unsigned NOT NULL AUTO_INCREMENT, name VARCHAR(200) NOT NULL, salary Double NOT NULL, start DATE NOT NULL, PRIMARY KEY (id));
+Query OK, 0 rows affected (2.3635 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > describe employee_payroll;
++--------+--------------+------+-----+---------+----------------+
+| Field  | Type         | Null | Key | Default | Extra          |
++--------+--------------+------+-----+---------+----------------+
+| id     | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name   | varchar(200) | NO   |     | NULL    |                |
+| salary | double       | NO   |     | NULL    |                |
+| start  | date         | NO   |     | NULL    |                |
++--------+--------------+------+-----+---------+----------------+
+4 rows in set (0.1144 sec)
+
+++++++++++++++++++++++++++UC-3++++++++++++++++++++++++++++++++++++++++++++
+
+  MySQL  localhost:3306 ssl  employee_payroll_service  SQL > insert into employee_payroll(name, salary, start) values ("Bill", 1000000.00, "2018-01-03");
+Query OK, 1 row affected (0.3334 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > insert into employee_payroll(name, salary, start) values ("Terisa", 2000000.00, "2018-11-03");
+Query OK, 1 row affected (0.1448 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > insert into employee_payroll(name, salary, start) values ("Charlie", 3000000.00, "2020-05-11");
+Query OK, 1 row affected (0.1969 sec)
+
++++++++++++++++++++++++++++++++UC-4++++++++++++++++++++++++++++++++++++++++
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+---------+------------+
+| id | name    | salary  | start      |
++----+---------+---------+------------+
+|  1 | Bill    | 1000000 | 2018-01-03 |
+|  2 | Terisa  | 2000000 | 2018-11-03 |
+|  3 | Charlie | 3000000 | 2020-05-11 |
++----+---------+---------+------------+
+3 rows in set (0.0983 sec)
+
+
++++++++++++++++++++++++++++++++UC-5++++++++++++++++++++++++++++++++++++++++++
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select salary from employee_payroll where name = "Bill";
++---------+
+| salary  |
++---------+
+| 1000000 |
++---------+
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll where start BETWEEN CAST("2018-01-01" AS DATE) AND DATE(NOW());
++----+---------+---------+------------+
+| id | name    | salary  | start      |
++----+---------+---------+------------+
+|  1 | Bill    | 1000000 | 2018-01-03 |
+|  2 | Terisa  | 2000000 | 2018-11-03 |
+|  3 | Charlie | 3000000 | 2020-05-11 |
++----+---------+---------+------------+
+3 rows in set (0.0949 sec)
+
+++++++++++++++++++++++++++++UC-6+++++++++++++++++++++++++++++++++++
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll add gender char(1) after name;
+Query OK, 0 rows affected (2.2076 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+--------+---------+------------+
+| id | name    | gender | salary  | start      |
++----+---------+--------+---------+------------+
+|  1 | Bill    | NULL   | 1000000 | 2018-01-03 |
+|  2 | Terisa  | NULL   | 2000000 | 2018-11-03 |
+|  3 | Charlie | NULL   | 3000000 | 2020-05-11 |
++----+---------+--------+---------+------------+
+3 rows in set (0.0007 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > describe employee_payroll;
++--------+--------------+------+-----+---------+----------------+
+| Field  | Type         | Null | Key | Default | Extra          |
++--------+--------------+------+-----+---------+----------------+
+| id     | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name   | varchar(200) | NO   |     | NULL    |                |
+| gender | char(1)      | YES  |     | NULL    |                |
+| salary | double       | NO   |     | NULL    |                |
+| start  | date         | NO   |     | NULL    |                |
++--------+--------------+------+-----+---------+----------------+
+5 rows in set (0.0648 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > update employee_payroll set gender = "F" where name = "Terisa";
+Query OK, 1 row affected (0.1372 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+--------+---------+------------+
+| id | name    | gender | salary  | start      |
++----+---------+--------+---------+------------+
+|  1 | Bill    | NULL   | 1000000 | 2018-01-03 |
+|  2 | Terisa  | F      | 2000000 | 2018-11-03 |
+|  3 | Charlie | NULL   | 3000000 | 2020-05-11 |
++----+---------+--------+---------+------------+
+3 rows in set (0.1015 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > update employee_payroll set gender = "M" where name = "Bill"or name = "Charlie";
+Query OK, 2 rows affected (0.0640 sec)
+
+Rows matched: 2  Changed: 2  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+--------+---------+------------+
+| id | name    | gender | salary  | start      |
++----+---------+--------+---------+------------+
+|  1 | Bill    | M      | 1000000 | 2018-01-03 |
+|  2 | Terisa  | F      | 2000000 | 2018-11-03 |
+|  3 | Charlie | M      | 3000000 | 2020-05-11 |
++----+---------+--------+---------+------------+
+3 rows in set (0.0006 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > update employee_payroll set salary = 3000000.00 where name = "Terisa";
+Query OK, 1 row affected (0.1752 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+--------+---------+------------+
+| id | name    | gender | salary  | start      |
++----+---------+--------+---------+------------+
+|  1 | Bill    | M      | 1000000 | 2018-01-03 |
+|  2 | Terisa  | F      | 3000000 | 2018-11-03 |
+|  3 | Charlie | M      | 3000000 | 2020-05-11 |
++----+---------+--------+---------+------------+
+3 rows in set (0.1004 sec)
+
+
+++++++++++++++++++++++++++++++++++++++UC-7+++++++++++++++++++++++++++++++++++++
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select avg(salary) from employee_payroll where gender = "M" group by gender;
++-------------+
+| avg(salary) |
++-------------+
+|     2000000 |
++-------------+
+1 row in set (0.1271 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select avg(salary) from employee_payroll group by gender;
++-------------+
+| avg(salary) |
++-------------+
+|     2000000 |
+|     3000000 |
++-------------+
+2 rows in set (0.0024 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select gender, avg(salary) from employee_payroll group by gender;
++--------+-------------+
+| gender | avg(salary) |
++--------+-------------+
+| M      |     2000000 |
+| F      |     3000000 |
++--------+-------------+
+2 rows in set (0.0008 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select gender, count(name) from employee_payroll group by gender;
++--------+-------------+
+| gender | count(name) |
++--------+-------------+
+| M      |           2 |
+| F      |           1 |
++--------+-------------+
+2 rows in set (0.0013 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select gender, sum(salary) from employee_payroll group by gender;
++--------+-------------+
+| gender | sum(salary) |
++--------+-------------+
+| M      |     4000000 |
+| F      |     3000000 |
++--------+-------------+
+2 rows in set (0.0010 sec)
+
+
+========================UC-8==================================================
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+--------+---------+------------+
+| id | name    | phoneNumber | gender | salary  | start      |
++----+---------+-------------+--------+---------+------------+
+|  1 | Bill    | NULL        | M      | 1000000 | 2018-01-03 |
+|  2 | Terisa  | NULL        | F      | 3000000 | 2018-11-03 |
+|  3 | Charlie | NULL        | M      | 3000000 | 2020-05-11 |
++----+---------+-------------+--------+---------+------------+
+3 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll add address varchar(100) after phoneNumber;
+Query OK, 0 rows affected (0.8360 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+--------+---------+------------+
+| id | name    | phoneNumber | address | gender | salary  | start      |
++----+---------+-------------+---------+--------+---------+------------+
+|  1 | Bill    | NULL        | NULL    | M      | 1000000 | 2018-01-03 |
+|  2 | Terisa  | NULL        | NULL    | F      | 3000000 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    | M      | 3000000 | 2020-05-11 |
++----+---------+-------------+---------+--------+---------+------------+
+3 rows in set (0.0199 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll add department varchar(50) NOT NULL after address;
+Query OK, 0 rows affected (1.9326 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+---------+------------+
+| id | name    | phoneNumber | address | department | gender | salary  | start      |
++----+---------+-------------+---------+------------+--------+---------+------------+
+|  1 | Bill    | NULL        | NULL    |            | M      | 1000000 | 2018-01-03 |
+|  2 | Terisa  | NULL        | NULL    |            | F      | 3000000 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      | 3000000 | 2020-05-11 |
++----+---------+-------------+---------+------------+--------+---------+------------+
+3 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll alter address set default "TBD";
+Query OK, 0 rows affected (0.2986 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+---------+------------+
+| id | name    | phoneNumber | address | department | gender | salary  | start      |
++----+---------+-------------+---------+------------+--------+---------+------------+
+|  1 | Bill    | NULL        | NULL    |            | M      | 1000000 | 2018-01-03 |
+|  2 | Terisa  | NULL        | NULL    |            | F      | 3000000 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      | 3000000 | 2020-05-11 |
++----+---------+-------------+---------+------------+--------+---------+------------+
+3 rows in set (0.0227 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > insert into employee_payroll (name, salary, start) values ("Bill",1000000.00, "2018-01-03");
+ERROR: 1364 (HY000): Field 'department' doesn't have a default value
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > delete from employee_payroll where name = "Bill";
+Query OK, 1 row affected (0.1519 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+---------+------------+
+| id | name    | phoneNumber | address | department | gender | salary  | start      |
++----+---------+-------------+---------+------------+--------+---------+------------+
+|  2 | Terisa  | NULL        | NULL    |            | F      | 3000000 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      | 3000000 | 2020-05-11 |
++----+---------+-------------+---------+------------+--------+---------+------------+
+2 rows in set (0.0122 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > insert into employee_payroll (name, salary, start) values ("Bill",1000000.00, "2018-01-03");
+ERROR: 1364 (HY000): Field 'department' doesn't have a default value
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll alter department set default "TBD";
+Query OK, 0 rows affected (0.8306 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+---------+------------+
+| id | name    | phoneNumber | address | department | gender | salary  | start      |
++----+---------+-------------+---------+------------+--------+---------+------------+
+|  2 | Terisa  | NULL        | NULL    |            | F      | 3000000 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      | 3000000 | 2020-05-11 |
++----+---------+-------------+---------+------------+--------+---------+------------+
+2 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > insert into employee_payroll (name, salary, start) values ("Bill",1000000.00, "2018-01-03");
+Query OK, 1 row affected (0.0812 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+---------+------------+
+| id | name    | phoneNumber | address | department | gender | salary  | start      |
++----+---------+-------------+---------+------------+--------+---------+------------+
+|  2 | Terisa  | NULL        | NULL    |            | F      | 3000000 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      | 3000000 | 2020-05-11 |
+|  4 | Bill    | NULL        | TBD     | TBD        | NULL   | 1000000 | 2018-01-03 |
++----+---------+-------------+---------+------------+--------+---------+------------+
+3 rows in set (0.0008 sec)
+
++++++++++++++++++++++++++++++++++++++++++UC-9++++++++++++++++++++++++++++++++++++++
+MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll rename column salary to basic_pay;
+Query OK, 0 rows affected (1.2214 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+-----------+------------+
+| id | name    | phoneNumber | address | department | gender | basic_pay | start      |
++----+---------+-------------+---------+------------+--------+-----------+------------+
+|  2 | Terisa  | NULL        | NULL    |            | F      |   3000000 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      |   3000000 | 2020-05-11 |
+|  4 | Bill    | NULL        | TBD     | TBD        | NULL   |   1000000 | 2018-01-03 |
++----+---------+-------------+---------+------------+--------+-----------+------------+
+3 rows in set (0.0538 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll add deduction Double NOT NULL after basic_pay;
+Query OK, 0 rows affected (1.7146 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+-----------+-----------+------------+
+| id | name    | phoneNumber | address | department | gender | basic_pay | deduction | start      |
++----+---------+-------------+---------+------------+--------+-----------+-----------+------------+
+|  2 | Terisa  | NULL        | NULL    |            | F      |   3000000 |         0 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      |   3000000 |         0 | 2020-05-11 |
+|  4 | Bill    | NULL        | TBD     | TBD        | NULL   |   1000000 |         0 | 2018-01-03 |
++----+---------+-------------+---------+------------+--------+-----------+-----------+------------+
+3 rows in set (0.0008 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll add taxable_pay Double NOT NULL after deduction;
+Query OK, 0 rows affected (1.9171 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+------------+
+| id | name    | phoneNumber | address | department | gender | basic_pay | deduction | taxable_pay | start      |
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+------------+
+|  2 | Terisa  | NULL        | NULL    |            | F      |   3000000 |         0 |           0 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      |   3000000 |         0 |           0 | 2020-05-11 |
+|  4 | Bill    | NULL        | TBD     | TBD        | NULL   |   1000000 |         0 |           0 | 2018-01-03 |
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+------------+
+3 rows in set (0.0006 sec)
+
+MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll add tax Double NOT NULL after taxable_pay;
+Query OK, 0 rows affected (1.5069 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+-----+------------+
+| id | name    | phoneNumber | address | department | gender | basic_pay | deduction | taxable_pay | tax | start      |
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+-----+------------+
+|  2 | Terisa  | NULL        | NULL    |            | F      |   3000000 |         0 |           0 |   0 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      |   3000000 |         0 |           0 |   0 | 2020-05-11 |
+|  4 | Bill    | NULL        | TBD     | TBD        | NULL   |   1000000 |         0 |           0 |   0 | 2018-01-03 |
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+-----+------------+
+3 rows in set (0.0007 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > alter table employee_payroll add net_pay Double NOT NULL after tax;
+ERROR: 1060 (42S21): Duplicate column name 'net_pay'
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select net_pay from employee_payroll;
++---------+
+| net_pay |
++---------+
+|       0 |
+|       0 |
+|       0 |
++---------+
+3 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > describe employee_payroll;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name        | varchar(200) | NO   |     | NULL    |                |
+| phoneNumber | varchar(20)  | YES  |     | NULL    |                |
+| address     | varchar(100) | YES  |     | TBD     |                |
+| department  | varchar(50)  | NO   |     |         |                |
+| gender      | char(1)      | YES  |     | NULL    |                |
+| basic_pay   | double       | NO   |     | NULL    |                |
+| deduction   | double       | NO   |     | NULL    |                |
+| taxable_pay | double       | NO   |     | NULL    |                |
+| tax         | double       | NO   |     | NULL    |                |
+| net_pay     | double       | NO   |     | NULL    |                |
+| start       | date         | NO   |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > update employee_payroll set department = "Sales" where name = "Terisa";
+Query OK, 0 rows affected (0.4133 sec)
+
+Rows matched: 1  Changed: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+-----+---------+------------+
+| id | name    | phoneNumber | address | department | gender | basic_pay | deduction | taxable_pay | tax | net_pay | start      |
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+-----+---------+------------+
+|  2 | Terisa  | NULL        | NULL    | Sales      | F      |   3000000 |         0 |           0 |   0 |       0 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      |   3000000 |         0 |           0 |   0 |       0 | 2020-05-11 |
+|  4 | Bill    | NULL        | TBD     | TBD        | NULL   |   1000000 |         0 |           0 |   0 |       0 | 2018-01-03 |
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+-----+---------+------------+
+3 rows in set (0.0007 sec)
+
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > insert into employee_payroll (name, department, gender, basic_pay, deduction, taxable_pay, tax, net_pay, start) values ("Terisa", "Marketing", "F", 3000000.00, 1000000.00, 2000000.00, 5000000.00, 15000000.00, "2018-01-03");
+Query OK, 1 row affected (0.1595 sec)
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > select *from employee_payroll;
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+---------+----------+------------+
+| id | name    | phoneNumber | address | department | gender | basic_pay | deduction | taxable_pay | tax     | net_pay  | start      |
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+---------+----------+------------+
+|  2 | Terisa  | NULL        | NULL    | Sales      | F      |   3000000 |         0 |           0 |       0 |        0 | 2018-11-03 |
+|  3 | Charlie | NULL        | NULL    |            | M      |   3000000 |         0 |           0 |       0 |        0 | 2020-05-11 |
+|  4 | Bill    | NULL        | TBD     | TBD        | NULL   |   1000000 |         0 |           0 |       0 |        0 | 2018-01-03 |
+|  5 | Terisa  | NULL        | TBD     | Marketing  | F      |   3000000 |   1000000 |     2000000 | 5000000 | 15000000 | 2018-01-03 |
++----+---------+-------------+---------+------------+--------+-----------+-----------+-------------+---------+----------+------------+
+4 rows in set (0.0230 sec)
+
+ MySQL  localhost:3306 ssl  employee_payroll_service  SQL > describe employee_payroll;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name        | varchar(200) | NO   |     | NULL    |                |
+| phoneNumber | varchar(20)  | YES  |     | NULL    |                |
+| address     | varchar(100) | YES  |     | TBD     |                |
+| department  | varchar(50)  | NO   |     |         |                |
+| gender      | char(1)      | YES  |     | NULL    |                |
+| basic_pay   | double       | NO   |     | NULL    |                |
+| deduction   | double       | NO   |     | NULL    |                |
+| taxable_pay | double       | NO   |     | NULL    |                |
+| tax         | double       | NO   |     | NULL    |                |
+| net_pay     | double       | NO   |     | NULL    |                |
+| start       | date         | NO   |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+12 rows in set (0.1931 sec)
+
+
+
++++++++++++++++++++++INNER JOIN+++++++++++++++++++++++++++++
+13 rows in set (0.0018 sec)
+ MySQL  localhost:3306 ssl  customer  SQL > create database employee;
+Query OK, 1 row affected (0.1133 sec)
+ MySQL  localhost:3306 ssl  customer  SQL > use employee;
+Default schema set to `employee`.
+Fetching table and column names from `employee` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  employee  SQL > create table employeeDetails(emp_no int NOT NULL primary key, eName varchar(20), job varchar(50), hireDate DATE, salary double, deptNo int NOT NULL);
+Query OK, 0 rows affected (0.7547 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > describe employeeDetails;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| emp_no   | int         | NO   | PRI | NULL    |       |
+| eName    | varchar(20) | YES  |     | NULL    |       |
+| job      | varchar(50) | YES  |     | NULL    |       |
+| hireDate | date        | YES  |     | NULL    |       |
+| salary   | double      | YES  |     | NULL    |       |
+| deptNo   | int         | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+6 rows in set (0.1071 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into employeeDetails(emp_no, eName, job, hireDate, salary, deptNo) values
+                                         -> (101,"Smith","Salesman","2016-04-10",250000.00, 20);
+Query OK, 1 row affected (0.1603 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from employeeDetails;
++--------+-------+----------+------------+--------+--------+
+| emp_no | eName | job      | hireDate   | salary | deptNo |
++--------+-------+----------+------------+--------+--------+
+|    101 | Smith | Salesman | 2016-04-10 | 250000 |     20 |
++--------+-------+----------+------------+--------+--------+
+1 row in set (0.0018 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into employeeDetails(emp_no, eName, job, hireDate, salary, deptNo) values  (201,"Martin","President","2011-06-09",850000.00, 10);
+Query OK, 1 row affected (0.2117 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from employeeDetails;
++--------+--------+-----------+------------+--------+--------+
+| emp_no | eName  | job       | hireDate   | salary | deptNo |
++--------+--------+-----------+------------+--------+--------+
+|    101 | Smith  | Salesman  | 2016-04-10 | 250000 |     20 |
+|    201 | Martin | President | 2011-06-09 | 850000 |     10 |
++--------+--------+-----------+------------+--------+--------+
+2 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into employeeDetails(emp_no, eName, job, hireDate, salary, deptNo) values  (407,"King","Manager","2002-07-21",950000.00, 30);
+Query OK, 1 row affected (0.0634 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from employeeDetails;
++--------+--------+-----------+------------+--------+--------+
+| emp_no | eName  | job       | hireDate   | salary | deptNo |
++--------+--------+-----------+------------+--------+--------+
+|    101 | Smith  | Salesman  | 2016-04-10 | 250000 |     20 |
+|    201 | Martin | President | 2011-06-09 | 850000 |     10 |
+|    407 | King   | Manager   | 2002-07-21 | 950000 |     30 |
++--------+--------+-----------+------------+--------+--------+
+3 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > create table dept(deptNo int, dName varchar(30), LOC varchar(30));
+Query OK, 0 rows affected (1.8936 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into dept(deptNo, dName, LOC) values (10, "Accounting","New York");
+Query OK, 1 row affected (0.1877 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select * from dept;
++--------+------------+----------+
+| deptNo | dName      | LOC      |
++--------+------------+----------+
+|     10 | Accounting | New York |
++--------+------------+----------+
+1 row in set (0.0014 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into dept(deptNo, dName, LOC) values (20, "Research","Chicago");
+Query OK, 1 row affected (0.2154 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select * from dept;
++--------+------------+----------+
+| deptNo | dName      | LOC      |
++--------+------------+----------+
+|     10 | Accounting | New York |
+|     20 | Research   | Chicago  |
++--------+------------+----------+
+2 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into dept(deptNo, dName, LOC) values (30, "Sales","Boston");
+Query OK, 1 row affected (0.1766 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select * from dept;
++--------+------------+----------+
+| deptNo | dName      | LOC      |
++--------+------------+----------+
+|     10 | Accounting | New York |
+|     20 | Research   | Chicago  |
+|     30 | Sales      | Boston   |
++--------+------------+----------+
+3 rows in set (0.0023 sec)
+st'
+ MySQL  localhost:3306 ssl  employee  SQL > select eName,job,salary,employeeDetails.deptNo,dept.dName from employeeDetails 
+						INNER JOIN dept 
+						on employeeDetails.deptNo = dept.deptNo;
++--------+-----------+--------+--------+------------+
+| eName  | job       | salary | deptNo | dName      |
++--------+-----------+--------+--------+------------+
+| Martin | President | 850000 |     10 | Accounting |
+| Smith  | Salesman  | 250000 |     20 | Research   |
+| King   | Manager   | 950000 |     30 | Sales      |
++--------+-----------+--------+--------+------------+
+3 rows in set (0.1366 sec)
+
+
++++++++++++++++++++++++++++++++++++++++LEFT Outer Join++++++++++++++++++++++++++++++++++++++++++++
+ MySQL  localhost:3306 ssl  employee  SQL > create table stud_data1(roll_no int, name varchar(30));
+Query OK, 0 rows affected (1.9071 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stud_data1 (roll_no, name) values (1, "rahul");
+Query OK, 1 row affected (0.1863 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from stud_data1;
++---------+-------+
+| roll_no | name  |
++---------+-------+
+|       1 | rahul |
++---------+-------+
+1 row in set (0.0009 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stud_data1 (roll_no, name) values (2, "kunal");
+Query OK, 1 row affected (0.1747 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stud_data1 (roll_no, name) values (3, "vinay");
+Query OK, 1 row affected (0.0900 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stud_data1 (roll_no, name) values (2, "kunal");
+Query OK, 1 row affected (0.0939 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from stud_data1;
++---------+-------+
+| roll_no | name  |
++---------+-------+
+|       1 | rahul |
+|       2 | kunal |
+|       3 | vinay |
+|       2 | kunal |
++---------+-------+
+4 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > create table stu_data2(roll_no int, address varchar(50));
+Query OK, 0 rows affected (1.4271 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stu_data2(roll_no, address) values (1, "Mumbai");
+Query OK, 1 row affected (0.1704 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stu_data2(roll_no, address) values (2, "Goa");
+Query OK, 1 row affected (0.0803 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stu_data2(roll_no, address) values (3, "Pune");
+Query OK, 1 row affected (0.1924 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from stu_data2;
++---------+---------+
+| roll_no | address |
++---------+---------+
+|       1 | Mumbai  |
+|       2 | Goa     |
+|       3 | Pune    |
++---------+---------+
+3 rows in set (0.0008 sec)
+
+
+++++++++++++++++++++++++++++++++++++++LEFT OUTER JOIN+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stu_data2(roll_no, address) values (7, "Pune");
+Query OK, 1 row affected (0.2255 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stu_data2(roll_no, address) values (8, "Banglore");
+Query OK, 1 row affected (0.1622 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from stu_data2;
++---------+----------+
+| roll_no | address  |
++---------+----------+
+|       1 | Mumbai   |
+|       2 | Goa      |
+|       3 | Pune     |
+|       7 | Pune     |
+|       8 | Banglore |
++---------+----------+
+5 rows in set (0.0009 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from stud_data1 left outer join stu_data2 on stud_data1.roll_no = stu_data2.roll_no;
++---------+-------+---------+---------+
+| roll_no | name  | roll_no | address |
++---------+-------+---------+---------+
+|       1 | rahul |       1 | Mumbai  |
+|       2 | kunal |       2 | Goa     |
+|       3 | vinay |       3 | Pune    |
+|       2 | kunal |       2 | Goa     |
++---------+-------+---------+---------+
+4 rows in set (0.0010 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from stud_data1;
++---------+-------+
+| roll_no | name  |
++---------+-------+
+|       1 | rahul |
+|       2 | kunal |
+|       3 | vinay |
+|       2 | kunal |
++---------+-------+
+4 rows in set (0.0008 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stud_data1 (roll_no, name) values (4, "Vinay");
+Query OK, 1 row affected (0.1782 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > insert into stud_data1 (roll_no, name) values (5, "Preeti");
+Query OK, 1 row affected (0.1079 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from stud_data1;
++---------+--------+
+| roll_no | name   |
++---------+--------+
+|       1 | rahul  |
+|       2 | kunal  |
+|       3 | vinay  |
+|       2 | kunal  |
+|       4 | Vinay  |
+|       5 | Preeti |
++---------+--------+
+6 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  employee  SQL > select *from stud_data1 left outer join stu_data2 on stud_data1.roll_no = stu_data2.roll_no;
++---------+--------+---------+---------+
+| roll_no | name   | roll_no | address |
++---------+--------+---------+---------+
+|       1 | rahul  |       1 | Mumbai  |
+|       2 | kunal  |       2 | Goa     |
+|       3 | vinay  |       3 | Pune    |
+|       2 | kunal  |       2 | Goa     |
+|       4 | Vinay  |    NULL | NULL    |
+|       5 | Preeti |    NULL | NULL    |
++---------+--------+---------+---------+
+6 rows in set (0.0010 sec)
+ MySQL  localhost:3306 ssl  employee  SQL >
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++RIGHT OUTER JOIN++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ MySQL  localhost:3306 ssl  employee  SQL > select *from stud_data1
+                                         -> right outer join stu_data2
+                                         -> on(stud_data1.roll_no = stu_data2.roll_no);
++---------+-------+---------+----------+
+| roll_no | name  | roll_no | address  |
++---------+-------+---------+----------+
+|       1 | rahul |       1 | Mumbai   |
+|       2 | kunal |       2 | Goa      |
+|       2 | kunal |       2 | Goa      |
+|       3 | vinay |       3 | Pune     |
+|    NULL | NULL  |       7 | Pune     |
+|    NULL | NULL  |       8 | Banglore |
++---------+-------+---------+----------+
+6 rows in set (0.0011 sec)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++FULL OUTER JOIN+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+ 						-> select * from stud_data1
+                                  		-> full outer join stu_data2
+                                         	-> on(stud_data1.roll_no = stu_data2.roll_no);
