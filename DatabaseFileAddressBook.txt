@@ -1,0 +1,330 @@
+++++++++++++++++++++++++++++++++++++++++UC-1++++++++++++++++++++++++++++++++
+MySQL Shell 8.0.23
+
+Copyright (c) 2016, 2021, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \c
+\connect [--mx|--mysqlx|--mc|--mysql] <URI>
+ MySQL  SQL > \connect root@localhost:3306
+Creating a session to 'root@localhost:3306'
+Fetching schema names for autocompletion... Press ^C to stop.
+Your MySQL connection id is 40
+Server version: 8.0.23 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > create database AddressBookService;
+Query OK, 1 row affected (2.8653 sec)
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------------+
+| Database                 |
++--------------------------+
+| addressbookservice       |
+| customer                 |
+| demo                     |
+| employee                 |
+| employee_payroll_service |
+| information_schema       |
+| login_info               |
+| mysql                    |
+| payroll_service          |
+| performance_schema       |
+| sakila                   |
+| sur                      |
+| suraj                    |
+| sys                      |
+| world                    |
++--------------------------+
+15 rows in set (0.9021 sec)
+
+
+++++++++++++++++++++++++++++++++++++UC-2++++++++++++++++++++++++++
+
+ MySQL  localhost:3306 ssl  SQL > use AddressBookService;
+Default schema set to `AddressBookService`.
+Fetching table and column names from `addressbookservice` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > create table addressBook (firstName varchar(20), lastName varchar(20), address varchar(100), city varchar(20), state varchar(20), zip int, phoneNumber int, email varchar(50) );
+Query OK, 0 rows affected (4.7446 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > describe addressBook;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| firstName   | varchar(20)  | YES  |     | NULL    |       |
+| lastName    | varchar(20)  | YES  |     | NULL    |       |
+| address     | varchar(100) | YES  |     | NULL    |       |
+| city        | varchar(20)  | YES  |     | NULL    |       |
+| state       | varchar(20)  | YES  |     | NULL    |       |
+| zip         | int          | YES  |     | NULL    |       |
+| phoneNumber | int          | YES  |     | NULL    |       |
+| email       | varchar(50)  | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+8 rows in set (0.9925 sec)
+
+
++++++++++++++++++++++++++++++++++++UC-3+++++++++++++++++++++++++++++++++++++++++++
+
+
+ insert into addressBook (firstName, lastName, address, city, state, zip, phoneNumber, email) values ("suraj", "temkar", "Chiplun", "Ratnagiri", "Maharastra", 415605, 989876, "suraj@92");
+Query OK, 1 row affected (0.3644 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+---------+-----------+------------+--------+-------------+----------+
+| firstName | lastName | address | city      | state      | zip    | phoneNumber | email    |
++-----------+----------+---------+-----------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92 |
++-----------+----------+---------+-----------+------------+--------+-------------+----------+
+1 row in set (0.0579 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > insert into addressBook (firstName, lastName, address, city, state, zip, phoneNumber, email) values ("akash", "Kakade", "BV", "Solapur", "Maharastra", 415605, 8574857, "akash@32");
+Query OK, 1 row affected (0.1541 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+---------+-----------+------------+--------+-------------+----------+
+| firstName | lastName | address | city      | state      | zip    | phoneNumber | email    |
++-----------+----------+---------+-----------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | BV      | Solapur   | Maharastra | 415605 |     8574857 | akash@32 |
++-----------+----------+---------+-----------+------------+--------+-------------+----------+
+2 rows in set (0.0006 sec)
+
+
++++++++++++++++++++++++++++++++++++++++++++++UC-4+++++++++++++++++++++++++++++++++++++
+
+
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+---------+-----------+------------+--------+-------------+----------+
+| firstName | lastName | address | city      | state      | zip    | phoneNumber | email    |
++-----------+----------+---------+-----------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | BV      | Solapur   | Maharastra | 415605 |     8574857 | akash@32 |
++-----------+----------+---------+-----------+------------+--------+-------------+----------+
+2 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > update addressBook set address = "Usmanabad" , state = "Hydrabad" where firstName = "akash";
+Query OK, 1 row affected (0.2249 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+2 rows in set (0.0918 sec)
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++UC-5++++++++++++++++++++++++++++++++++
+
+
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+2 rows in set (0.0918 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > insert into addressBook (firstName, lastName, address, city, state, zip, phoneNumber, email) values ("parag", "Katkar", "BV", "Solapur", "Maharastra", 415605, 8574857, "parag32@12");
+Query OK, 1 row affected (0.1951 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+------------+--------+-------------+------------+
+| firstName | lastName | address   | city      | state      | zip    | phoneNumber | email      |
++-----------+----------+-----------+-----------+------------+--------+-------------+------------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92   |
+| akash     | Kakade   | Usmanabad | Solapur   | Hydrabad   | 415605 |     8574857 | akash@32   |
+| parag     | Katkar   | BV        | Solapur   | Maharastra | 415605 |     8574857 | parag32@12 |
++-----------+----------+-----------+-----------+------------+--------+-------------+------------+
+3 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > delete from addressBook where name = "parag";
+ERROR: 1054 (42S22): Unknown column 'name' in 'where clause'
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > delete from addressBook where firstName = "parag";
+Query OK, 1 row affected (0.1038 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+2 rows in set (0.0087 sec)
+
+
+++++++++++++++++++++++++++++++++++++++++++++++UC-6+++++++++++++++++++++++++++++++++
+
+
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+2 rows in set (0.0087 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select firstName from addressBook where city = "Ratnagiri";
++-----------+
+| firstName |
++-----------+
+| suraj     |
++-----------+
+1 row in set (0.0010 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select firstName, lastName from addressBook where city = "Ratnagiri";
++-----------+----------+
+| firstName | lastName |
++-----------+----------+
+| suraj     | temkar   |
++-----------+----------+
+1 row in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select firstName, lastName, address, phoneNumber from addressBook where city = "Ratnagiri";
++-----------+----------+---------+-------------+
+| firstName | lastName | address | phoneNumber |
++-----------+----------+---------+-------------+
+| suraj     | temkar   | Chiplun |      989876 |
++-----------+----------+---------+-------------+
+1 row in set (0.0009 sec)
+
+
+
+++++++++++++++++++++++++++++++++UC-7++++++++++++++++++++++++++++++++++++++
+
+ select count(city), count(state) from addressBook;
++-------------+--------------+
+| count(city) | count(state) |
++-------------+--------------+
+|           2 |            2 |
++-------------+--------------+
+1 row in set (0.0009 sec)
+
++++++++++++++++++++++++++++UC-8++++++++++++++++++++++++++++++++++++++++++
+
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+2 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook order by lastName;
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+| akash     | Kakade   | Usmanabad | Solapur   | Hydrabad   | 415605 |     8574857 | akash@32 |
+| suraj     | temkar   | Chiplun   | Ratnagiri | Maharastra | 415605 |      989876 | suraj@92 |
++-----------+----------+-----------+-----------+------------+--------+-------------+----------+
+2 rows in set (0.0009 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > ^C
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select city from addressBook order by lastName;
++-----------+
+| city      |
++-----------+
+| Solapur   |
+| Ratnagiri |
++-----------+
+2 rows in set (0.0011 sec)
+
+
++++++++++++++++++++++++++++++++++++++++++++++UC-9++++++++++++++++++++++++++++++++++++
+
+
+
+2 rows in set (0.0011 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > alter addressBook add addressBookName varchar(30) after city;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'addressBook add addressBookName varchar(30) after city' at line 1
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > alter table addressBook add addressBookName varchar(30) after city;
+Query OK, 0 rows affected (3.3383 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+-----------------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | addressBookName | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+-----------------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | NULL            | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | NULL            | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+-----------------+------------+--------+-------------+----------+
+2 rows in set (0.0008 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > describe addressBook;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| firstName       | varchar(20)  | YES  |     | NULL    |       |
+| lastName        | varchar(20)  | YES  |     | NULL    |       |
+| address         | varchar(100) | YES  |     | NULL    |       |
+| city            | varchar(20)  | YES  |     | NULL    |       |
+| addressBookName | varchar(30)  | YES  |     | NULL    |       |
+| state           | varchar(20)  | YES  |     | NULL    |       |
+| zip             | int          | YES  |     | NULL    |       |
+| phoneNumber     | int          | YES  |     | NULL    |       |
+| email           | varchar(50)  | YES  |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+9 rows in set (0.1225 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > alter table addresbook add addressBookType varchar(30) after addressBookName;
+ERROR: 1146 (42S02): Table 'addressbookservice.addresbook' doesn't exist
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > alter table addressbook add addressBookType varchar(30) after addressBookName;
+Query OK, 0 rows affected (1.6555 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | addressBookName | addressBookType | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | NULL            | NULL            | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | NULL            | NULL            | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+2 rows in set (0.0008 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > describe addressBook;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| firstName       | varchar(20)  | YES  |     | NULL    |       |
+| lastName        | varchar(20)  | YES  |     | NULL    |       |
+| address         | varchar(100) | YES  |     | NULL    |       |
+| city            | varchar(20)  | YES  |     | NULL    |       |
+| addressBookName | varchar(30)  | YES  |     | NULL    |       |
+| addressBookType | varchar(30)  | YES  |     | NULL    |       |
+| state           | varchar(20)  | YES  |     | NULL    |       |
+| zip             | int          | YES  |     | NULL    |       |
+| phoneNumber     | int          | YES  |     | NULL    |       |
+| email           | varchar(50)  | YES  |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+10 rows in set (0.0024 sec)
+
++++++++++++++++++++++++++++++++++++++++++++++UC-10++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | addressBookName | addressBookType | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | NULL            | NULL            | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | NULL            | NULL            | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+2 rows in set (0.0011 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > update addressBook set addressBookName = "Family" where firstName = "suraj";
+Query OK, 1 row affected (0.0942 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | addressBookName | addressBookType | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | Family          | NULL            | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | NULL            | NULL            | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+2 rows in set (0.0140 sec)
+
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select *from addressBook;
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+| firstName | lastName | address   | city      | addressBookName | addressBookType | state      | zip    | phoneNumber | email    |
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+| suraj     | temkar   | Chiplun   | Ratnagiri | Family          | NULL            | Maharastra | 415605 |      989876 | suraj@92 |
+| akash     | Kakade   | Usmanabad | Solapur   | NULL            | NULL            | Hydrabad   | 415605 |     8574857 | akash@32 |
++-----------+----------+-----------+-----------+-----------------+-----------------+------------+--------+-------------+----------+
+2 rows in set (0.0140 sec)
+ MySQL  localhost:3306 ssl  addressbookservice  SQL > select count(addressBookType) from addressBook;
++------------------------+
+| count(addressBookType) |
++------------------------+
+|                      0 |
++------------------------+
+1 row in set (0.0010 sec)
+
+
